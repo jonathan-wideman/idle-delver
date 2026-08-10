@@ -6,16 +6,16 @@ import { useSelector } from "@xstate/store-react"
 import { store } from "./store"
 
 export function App() {
-  const { tick, running, toggle, reset } = useGameTimer({
+  const { tick, running, toggle, resetTimer } = useGameTimer({
     initialRunning: true,
     onTick: gameTick,
   })
   const count = useSelector(store, (state) => state.context.count)
 
   const resetAll = useCallback(() => {
-    reset()
+    resetTimer()
     store.trigger.reset()
-  }, [reset])
+  }, [resetTimer])
 
   return (
     <div className="flex min-h-svh p-6">

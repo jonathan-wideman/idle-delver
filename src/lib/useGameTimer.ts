@@ -21,6 +21,11 @@ export default function useGameTimer({
     onTickRef.current = onTick
   }, [onTick])
 
+  const tickRef = useRef<number>(initialTick)
+  useEffect(() => {
+    tickRef.current = tick
+  }, [tick])
+
   const intervalRef = useRef<number | undefined>(undefined)
 
   useEffect(() => {
@@ -32,16 +37,18 @@ export default function useGameTimer({
       return
     }
 
+    if (intervalRef.current !== undefined) {
+      return
+    }
+
     intervalRef.current = window.setInterval(() => {
-      setTick((t) => {
-        const next = t + 1
-        try {
-          onTickRef.current?.(next)
-        } catch (e) {
-          // swallow callback errors to avoid breaking the timer
-        }
-        return next
-      })
+      const next = tickRef.current + 1
+      setTick(next)
+      try {
+        onTickRef.current?.(next)
+      } catch (e) {
+        // swallow callback errors to avoid breaking the timer
+      }
     }, intervalMs)
 
     return () => {
@@ -55,7 +62,7 @@ export default function useGameTimer({
   const pause = useCallback(() => setRunning(false), [])
   const resume = useCallback(() => setRunning(true), [])
   const toggle = useCallback(() => setRunning((r) => !r), [])
-  const reset = useCallback(() => setTick(0), [])
+  const resetTimer = useCallback(() => setTick(0), [])
 
   return {
     tick,
@@ -63,7 +70,8 @@ export default function useGameTimer({
     pause,
     resume,
     toggle,
-    reset,
+    resetTimer,
+    reset: resetTimer,
     setTick,
   }
 }
