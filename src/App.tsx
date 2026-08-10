@@ -1,4 +1,5 @@
 import { Button } from "@/components/ui/button"
+import { useCallback } from "react"
 import useGameTimer from "@/lib/useGameTimer"
 import { gameTick } from "./gameTick"
 import { useSelector } from "@xstate/store-react"
@@ -10,6 +11,11 @@ export function App() {
     onTick: gameTick,
   })
   const count = useSelector(store, (state) => state.context.count)
+
+  const resetAll = useCallback(() => {
+    reset()
+    store.trigger.reset()
+  }, [reset])
 
   return (
     <div className="flex min-h-svh p-6">
@@ -25,7 +31,7 @@ export function App() {
           </p>
           <div className="mt-2 flex gap-2">
             <Button onClick={toggle}>{running ? "Pause" : "Resume"}</Button>
-            <Button onClick={reset}>Reset</Button>
+            <Button onClick={resetAll}>Reset</Button>
           </div>
           <p className="mt-2">
             Count: <span className="font-mono">{count}</span>

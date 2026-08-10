@@ -5,5 +5,8 @@ export const store = createStore({
     inc: (context, event: { by?: number }) => ({
       count: context.count + (event.by ?? 1),
     }),
+    reset: () => ({
+      count: 0,
+    }),
   },
 })
