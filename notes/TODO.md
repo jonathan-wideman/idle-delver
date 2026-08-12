@@ -1,0 +1,11 @@
+TODO:
+- don't block render thread when catching up ticks
+- random character names
+- random challenge adjective + obstacle pairs, eg.
+  - a daunting descent
+  - a deadly trap
+  - a furious ooze
+- draw cards instead of dice, equipment adds cards to pool
+- random boon / event rooms, eg.
+  - heal
+  - treasure
