@@ -1,8 +1,8 @@
 import { Button } from "@/components/ui/button"
 import { useCallback, useEffect, useMemo, useState } from "react"
 import useGameTimer from "@/lib/useGameTimer"
-import { gameTick } from "./gameTick"
 import { loadGameState, saveGameState } from "@/lib/gameState"
+import { advanceHeroTick, startAdventuring } from "@/lib/gameLogic"
 import { useSelector } from "@xstate/store-react"
 import { store } from "./store"
 
@@ -15,39 +15,72 @@ export function App() {
     setLogs((previous) => [message, ...previous].slice(0, 50))
   }, [])
 
+  const [heroState, setHeroState] = useState(savedState.hero)
+
+  const handleTick = useCallback(
+    (nextTick: number) => {
+      setHeroState((hero) => {
+        const result = advanceHeroTick(hero, appendLog)
+        if (result.goldDelta > 0) {
+          store.trigger.earnGold({ amount: result.goldDelta })
+        }
+        return result.hero
+      })
+    },
+    [appendLog]
+  )
+
   const { tick, running, lastProcessedMs, pause, resume, resetTimer } =
     useGameTimer({
       initialRunning: savedState.running,
       initialTick: savedState.tick,
       initialLastProcessedMs: savedState.lastProcessedMs,
-      onTick: gameTick,
+      onTick: handleTick,
       onLog: appendLog,
     })
+
+  const gold = useSelector(store, (state) => state.context.gold)
 
   const recentLogs = useMemo(
     () => logs.map((line, index) => <div key={`${index}-${line}`}>{line}</div>),
     [logs]
   )
 
-  const count = useSelector(store, (state) => state.context.count)
-
   useEffect(() => {
     saveGameState({
       tick,
       running,
-      count,
+      gold,
       lastProcessedMs,
+      hero: heroState,
     })
-  }, [tick, running, count, lastProcessedMs])
+  }, [tick, running, gold, lastProcessedMs, heroState])
+
+  const handleStartAdventure = useCallback(() => {
+    setHeroState((hero) => startAdventuring(hero))
+  }, [])
 
   const resetAll = useCallback(() => {
     resetTimer()
-    store.trigger.reset()
+    store.trigger.resetGold()
   }, [resetTimer])
 
   const clearLogs = useCallback(() => {
     setLogs([])
   }, [])
+
+  const heroHp = heroState.hp
+  const heroMode = heroState.mode
+  const task = heroState.currentTask
+
+  const taskLabel = task
+    ? task.type === "dungeon"
+      ? `Dungeon (${task.skill})`
+      : "Healing"
+    : "No active task"
+
+  const taskProgress = task ? `${task.progress}/${task.requiredTicks}` : undefined
+  const taskDifficulty = task?.type === "dungeon" ? task.difficulty : null
 
   return (
     <div className="flex min-h-svh p-6">
@@ -68,8 +101,34 @@ export function App() {
             <Button onClick={resetAll}>Reset</Button>
           </div>
           <p className="mt-2">
-            Count: <span className="font-mono">{count}</span>
+            Gold: <span className="font-mono">{gold}</span>
           </p>
+          <p>
+            Hero HP: <span className="font-mono">{heroHp}/{heroState.maxHp}</span>
+          </p>
+          <p>
+            Hero mode: <span className="font-mono">{heroMode}</span>
+          </p>
+          <p>
+            Current task: <span className="font-mono">{taskLabel}</span>
+          </p>
+          {task ? (
+            <>
+              <p>
+                Progress: <span className="font-mono">{taskProgress}</span>
+              </p>
+              {taskDifficulty !== null ? (
+                <p>
+                  Difficulty: <span className="font-mono">{taskDifficulty}</span>
+                </p>
+              ) : null}
+            </>
+          ) : null}
+          <div className="mt-2 flex gap-2">
+            <Button onClick={handleStartAdventure} disabled={heroHp < 1 || heroMode === "adventuring"}>
+              Send adventuring
+            </Button>
+          </div>
           <div className="mt-4 w-md rounded border border-border bg-background p-3 font-mono text-xs text-slate-100 shadow-sm">
             <div className="mb-2 flex items-center justify-between gap-3 text-sm font-medium">
               <span>Debug log</span>
