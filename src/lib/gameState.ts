@@ -1,7 +1,10 @@
+// DONE
 export type GameSkill = "combat" | "exploration" | "social"
 
+// DONE
 type TaskType = "dungeon" | "healing"
 
+// DONE
 export type GameTask = {
   type: TaskType
   skill: GameSkill | null
@@ -10,6 +13,7 @@ export type GameTask = {
   difficulty: number | null
 }
 
+// DONE
 export type HeroState = {
   hp: number
   maxHp: number
@@ -17,6 +21,7 @@ export type HeroState = {
   currentTask: GameTask | null
 }
 
+// DONE
 export type GameState = {
   tick: number
   running: boolean
@@ -25,12 +30,15 @@ export type GameState = {
   hero: HeroState
 }
 
+// DONE
 const STORAGE_GAME_STATE_KEY = "idle-delver-game-state"
 
+// TODO: MAYBE
 const isNumber = (value: unknown): value is number => typeof value === "number" && Number.isFinite(value)
 const isBoolean = (value: unknown): value is boolean => typeof value === "boolean"
 const isString = (value: unknown): value is string => typeof value === "string"
 
+// TODO: MAYBE
 function isValidTask(value: unknown): value is GameTask {
   if (typeof value !== "object" || value === null) return false
   const task = value as Record<string, unknown>
@@ -43,6 +51,7 @@ function isValidTask(value: unknown): value is GameTask {
   )
 }
 
+// TODO: MAYBE
 function isValidHero(value: unknown): value is HeroState {
   if (typeof value !== "object" || value === null) return false
   const hero = value as Record<string, unknown>
@@ -54,6 +63,7 @@ function isValidHero(value: unknown): value is HeroState {
   )
 }
 
+// TODO: MAYBE
 function isValidGameState(value: unknown): value is GameState {
   if (typeof value !== "object" || value === null) {
     return false
@@ -69,6 +79,7 @@ function isValidGameState(value: unknown): value is GameState {
   )
 }
 
+// DONE, TODO: MAYBE more error handling
 export function loadGameState(): GameState {
   const fallback: GameState = {
     tick: 0,
@@ -98,6 +109,7 @@ export function loadGameState(): GameState {
   }
 }
 
+// DONE, TODO: MAYBE more error handling
 export function saveGameState(state: GameState) {
   if (typeof localStorage === "undefined") {
     return

@@ -1,21 +1,26 @@
 import { type GameSkill, type GameTask, type HeroState } from "./gameState"
 
+// DONE
 const skillDice: Record<GameSkill, number> = {
   combat: 6,
   exploration: 8,
   social: 10,
 }
 
+// DONE
 const skills: GameSkill[] = ["combat", "exploration", "social"]
 
+// DONE
 function randomInt(min: number, max: number) {
   return Math.floor(Math.random() * (max - min + 1)) + min
 }
 
+// DONE
 function randomSkill(): GameSkill {
   return skills[randomInt(0, skills.length - 1)]
 }
 
+// DONE
 export function createDungeonTask(): GameTask {
   const skill = randomSkill()
   return {
@@ -27,6 +32,7 @@ export function createDungeonTask(): GameTask {
   }
 }
 
+// DONE
 export function createHealingTask(): GameTask {
   return {
     type: "healing",
@@ -37,6 +43,7 @@ export function createHealingTask(): GameTask {
   }
 }
 
+// DONE
 export function startAdventuring(hero: HeroState): HeroState {
   if (hero.hp < 1 || hero.mode === "adventuring") {
     return hero
@@ -45,10 +52,12 @@ export function startAdventuring(hero: HeroState): HeroState {
   return {
     ...hero,
     mode: "adventuring",
+    // TODO: MAYBE; do we need to assign hero a task, or just wait for next tick?
     currentTask: createDungeonTask(),
   }
 }
 
+// DONE
 export function stopAdventuring(hero: HeroState): HeroState {
   if (hero.mode === "resting") {
     return hero
@@ -61,6 +70,7 @@ export function stopAdventuring(hero: HeroState): HeroState {
   }
 }
 
+// TODO: WIP
 export function advanceHeroTick(
   hero: HeroState,
   appendLog: (message: string) => void
@@ -68,6 +78,7 @@ export function advanceHeroTick(
   let nextHero = hero
   let goldDelta = 0
 
+  // TODO: WIP
   if (!nextHero.currentTask) {
     if (nextHero.mode === "adventuring") {
       const nextTask = createDungeonTask()
@@ -92,14 +103,17 @@ export function advanceHeroTick(
     }
   }
 
+  // TODO: WIP
   const task = nextHero.currentTask
   if (!task) {
     return { hero: nextHero, goldDelta }
   }
 
+  // TODO: WIP
   const progress = task.progress + 1
   const updatedTask = { ...task, progress }
 
+  // TODO: WIP
   if (progress < task.requiredTicks) {
     appendLog(
       `Progressed ${task.type} task: ${progress}/${task.requiredTicks} tick(s)`
@@ -111,6 +125,7 @@ export function advanceHeroTick(
     return { hero: nextHero, goldDelta }
   }
 
+  // TODO: WIP
   if (task.type === "healing") {
     const newHp = Math.min(nextHero.maxHp, nextHero.hp + 1)
     appendLog(`Healing complete: restored 1 HP (${nextHero.hp} → ${newHp})`)
@@ -122,6 +137,7 @@ export function advanceHeroTick(
     return { hero: nextHero, goldDelta }
   }
 
+  // TODO: WIP
   const skill = task.skill!
   const die = skillDice[skill]
   const roll = randomInt(1, die)
@@ -130,6 +146,7 @@ export function advanceHeroTick(
     `Dungeon task complete: rolled ${roll} on d${die} vs difficulty ${difficulty}`
   )
 
+  // TODO: WIP
   if (roll >= difficulty) {
     goldDelta = difficulty
     appendLog(`Success! Earned ${difficulty} gold.`)
@@ -140,9 +157,11 @@ export function advanceHeroTick(
     return { hero: nextHero, goldDelta }
   }
 
+  // TODO: WIP
   const nextHp = nextHero.hp - 1
   appendLog(`Failed challenge: lost 1 HP (${nextHero.hp} → ${nextHp})`)
 
+  // TODO: WIP
   if (nextHp <= 0) {
     appendLog("Hero is down and returns to resting.")
     nextHero = {
@@ -154,6 +173,7 @@ export function advanceHeroTick(
     return { hero: nextHero, goldDelta }
   }
 
+  // TODO: WIP
   nextHero = {
     ...nextHero,
     hp: nextHp,

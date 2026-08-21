@@ -1,7 +1,9 @@
 import { useCallback, useEffect, useRef, useState } from "react"
 
+// TODO: WIP
 const MS_PER_TICK = 1000
 
+// TODO: WIP
 type UseGameTimerOptions = {
   initialRunning?: boolean
   initialTick?: number
@@ -11,6 +13,7 @@ type UseGameTimerOptions = {
   onLog?: (message: string) => void
 }
 
+// TODO: WIP
 export default function useGameTimer({
   initialRunning = false,
   initialTick = 0,
@@ -25,32 +28,39 @@ export default function useGameTimer({
     initialLastProcessedMs ?? Date.now()
   )
 
+// TODO: WIP
   const onTickRef = useRef(onTick)
   useEffect(() => {
     onTickRef.current = onTick
   }, [onTick])
 
+// TODO: WIP
   const onLogRef = useRef<((message: string) => void) | undefined>(onLog)
   useEffect(() => {
     onLogRef.current = onLog
   }, [onLog])
 
+// TODO: WIP
   const logMessage = useCallback((message: string) => {
     console.debug(`[GameTimer] ${message}`)
     onLogRef.current?.(message)
   }, [])
 
+// TODO: WIP
   const tickRef = useRef<number>(initialTick)
   useEffect(() => {
     tickRef.current = tick
   }, [tick])
 
+// TODO: WIP
   const runningRef = useRef<boolean>(initialRunning)
   useEffect(() => {
     runningRef.current = running
   }, [running])
 
+// TODO: WIP
   const intervalRef = useRef<number | undefined>(undefined)
+// TODO: WIP
   const lastProcessedRef = useRef<number>(
     initialLastProcessedMs ?? Date.now()
   )
@@ -58,6 +68,7 @@ export default function useGameTimer({
     lastProcessedRef.current = lastProcessedMs
   }, [lastProcessedMs])
 
+// TODO: WIP
   const processElapsedTicks = useCallback(
     (reason: string) => {
       const now = Date.now()
@@ -98,6 +109,7 @@ export default function useGameTimer({
     [logMessage]
   )
 
+// TODO: WIP
   useEffect(() => {
     if (runningRef.current) {
       const missedTicks = processElapsedTicks("load")
@@ -108,6 +120,7 @@ export default function useGameTimer({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
+// TODO: WIP
   useEffect(() => {
     if (!running) {
       if (intervalRef.current !== undefined) {
@@ -144,11 +157,13 @@ export default function useGameTimer({
     }
   }, [running, intervalMs, logMessage])
 
+// TODO: WIP
   const pause = useCallback(() => {
     logMessage("paused")
     setRunning(false)
   }, [logMessage])
 
+// TODO: WIP
   const resume = useCallback(() => {
     const missedTicks = processElapsedTicks("resume")
     if (missedTicks > 0) {
@@ -158,6 +173,7 @@ export default function useGameTimer({
     setRunning(true)
   }, [processElapsedTicks, logMessage])
 
+// TODO: WIP
   const toggle = useCallback(() => {
     if (runningRef.current) {
       pause()
@@ -166,6 +182,7 @@ export default function useGameTimer({
     }
   }, [pause, resume])
 
+// TODO: WIP
   const resetTimer = useCallback(() => {
     const now = Date.now()
     logMessage("reset timer")
@@ -175,6 +192,7 @@ export default function useGameTimer({
     setLastProcessedMs(now)
   }, [logMessage])
 
+// TODO: WIP
   return {
     tick,
     running,

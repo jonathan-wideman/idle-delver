@@ -1,0 +1,138 @@
+import { createStore } from "@xstate/store-react"
+import { MODE, newCharacter, type Character, type Mode } from "./character.new"
+import { loadContext } from "./persistence.lib"
+import { newTask } from "./task.new"
+
+// TODO: extract logs stuff
+export type LogLevel = "info" | "warning" | "error"
+export interface LogEntry {
+  level: LogLevel
+  timestamp: number
+  message: string
+}
+
+const startupTime = Date.now()
+// TODO: no initial task
+const initialCharacter = newCharacter()
+const initialTask = newTask("dungeon")
+const initialContext = loadContext() ?? {
+  meta: {
+    time: {
+      ticks: 0,
+      lastTickAt: startupTime,
+      // TODO: may need to handle timer state outside store
+      paused: false, // PAUSED but will still accumulate catchup ticks
+      stopped: false, // will not accumulate catchup ticks
+    },
+    logs: [
+      // TODO: move to startup script
+      {
+        level: "info",
+        message: "Game started",
+        timestamp: startupTime,
+      },
+    ] as LogEntry[],
+  },
+  world: {
+    tasks: [
+      // TODO: no initial task
+      { ...initialTask },
+    ],
+  },
+  player: {
+    money: 0,
+  },
+  characters: [
+    {
+      ...initialCharacter,
+      currentTaskId: initialTask.id,
+    },
+  ],
+}
+
+export const store = createStore({
+  context: { ...initialContext },
+  on: {
+    log: (context, event: { level: LogLevel; message: string }) => ({
+      ...context,
+      meta: {
+        ...context.meta,
+        logs: [
+          ...context.meta.logs,
+          { level: event.level, timestamp: Date.now(), message: event.message },
+        ],
+      },
+    }),
+    catchup: (context) => {
+      // FIXME: do catchup ticks
+      return { ...context }
+    },
+    tick: (context, _event, enq) => {
+      const currentTime = Date.now()
+
+      enq.trigger.log({ level: "info" as LogLevel, message: "tick" })
+
+      // TODO: start next task
+      // - resting
+      // - adventuring
+
+      // TODO: progress task
+      // if progress complete:
+      //   healing: restore 1 hp
+      //   dungeon: roll skill, reward gold or lose hp
+
+      // If hero is down, stop adventuring
+
+      return {
+        ...context,
+        meta: {
+          ...context.meta,
+          time: {
+            ...context.meta.time,
+            ticks: context.meta.time.ticks + 1,
+            lastTickAt: currentTime,
+          },
+        },
+      }
+    },
+    gainMoney: (context, event: { amount?: number }) => ({
+      ...context,
+      player: {
+        ...context.player,
+        money: context.player.money + (event.amount ?? 0),
+      },
+    }),
+    takeDamage: (context, event: { characterId: string; amount?: number }) => {
+      return {
+        ...context,
+        characters: context.characters.map((c: Character) =>
+          c.id === event.characterId
+            ? { ...c, hp: Math.max(0, c.hp - (event.amount ?? 0)) }
+            : c
+        ),
+      }
+    },
+    changeHeroMode: (context, event: { characterId: string; mode: Mode }) => {
+      const character = context.characters.find(
+        (c: Character) => c.id === event.characterId
+      )
+
+      // Prevent adventuring at zero hp
+      if (event.mode === MODE.adventuring && character?.hp < 1) {
+        return context
+      }
+
+      // TODO: do we need to assign hero a task, or just wait for next tick?
+
+      return {
+        ...context,
+        characters: context.characters.map((c: Character) =>
+          c.id === event.characterId ? { ...c, mode: event.mode } : c
+        ),
+      }
+    },
+    resetContext: () => {
+      return { ...initialContext }
+    },
+  },
+})

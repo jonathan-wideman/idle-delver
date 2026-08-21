@@ -1,8 +1,10 @@
 import { createStore } from "@xstate/store-react"
 import { loadGameState } from "./lib/gameState"
 
+// DONE
 const { gold: savedGold } = loadGameState()
 
+// DONE
 export const store = createStore({
   context: { gold: savedGold },
   on: {
