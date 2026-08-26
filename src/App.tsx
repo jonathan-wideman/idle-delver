@@ -101,7 +101,7 @@ export function AppOld() {
     store.trigger.resetGold()
   }, [resetTimer])
 
-  // TODO: WIP
+  // DONE
   const clearLogs = useCallback(() => {
     setLogs([])
   }, [])
@@ -192,7 +192,6 @@ export function AppOld() {
           <div className="mt-4 w-md rounded border border-border bg-background p-3 font-mono text-xs text-slate-100 shadow-sm">
             <div className="mb-2 flex items-center justify-between gap-3 text-sm font-medium">
               <span>Debug log</span>
-              {/* TODO: WIP */}
               <Button variant="secondary" size="sm" onClick={clearLogs}>
                 Clear logs
               </Button>

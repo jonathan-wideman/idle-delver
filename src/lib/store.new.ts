@@ -63,6 +63,13 @@ export const store = createStore({
         ],
       },
     }),
+    clearLogs: (context) => ({
+      ...context,
+      meta: {
+        ...context.meta,
+        logs: []
+      }
+    }),
     catchup: (context) => {
       // FIXME: do catchup ticks
       return { ...context }

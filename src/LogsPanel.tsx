@@ -45,6 +45,13 @@ export function LogsPanel() {
       >
         Test Log
       </Button>{" "}
+      <Button
+        onClick={() => {
+          store.trigger.clearLogs()
+        }}
+      >
+        Clear Logs
+      </Button>{" "}
       {logLines}
       {/* TODO: clear logs display - offset display index?*/}
       {/* TODO: log priority & filter by priority; info vs warning vs error, etc*/}
