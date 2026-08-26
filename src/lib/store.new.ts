@@ -74,6 +74,7 @@ export const store = createStore({
       // FIXME: do catchup ticks
       return { ...context }
     },
+    // TODO: maybe ticks should be outside the game store?
     tick: (context, _event, enq) => {
       const currentTime = Date.now()
 

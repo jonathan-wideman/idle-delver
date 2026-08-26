@@ -4,7 +4,8 @@ import { PanelTitle } from "./components/custom/hoc/PanelTitle"
 import { store } from "./lib/store.new"
 import { Button } from "./components/ui/button"
 
-export function DebugTimePanel() {
+// FIXME: setRunning type
+export function DebugTimePanel({ running, setRunning }: { running: boolean, setRunning: () => void }) {
   const ticks = useSelector(
     store,
     (state) => state.context.meta.time.ticks
@@ -14,7 +15,7 @@ export function DebugTimePanel() {
     (state) => state.context.meta.time.lastTickAt
   ) as number
   // TODO: start / pause / stop timer
-  const running = true
+  // const running = true
   return (
     <Panel>
       <PanelTitle>Debug Time</PanelTitle>
@@ -23,8 +24,8 @@ export function DebugTimePanel() {
       {/* TODO: timer functionality */}
       {/* TODO: start / pause / stop timer */}
       <div>
-        <Button onClick={() => {}}>{running ? "Pause" : "Resume"}</Button>{" "}
-        Status: {}
+        <Button onClick={() => { setRunning(!running) }}>{running ? "Pause" : "Resume"}</Button>{" "}
+        Status: {running ? "running" : "paused"}
       </div>
       <div>
         <Button

@@ -1,6 +1,7 @@
 import { Button } from "@/components/ui/button"
 import { useCallback, useEffect, useMemo, useState } from "react"
 import useGameTimer from "@/lib/useGameTimer"
+import { useGameTimer as useGameTimerNew } from "@/lib/useGameTimer.new"
 import { loadGameState, saveGameState } from "@/lib/gameState"
 import { advanceHeroTick, startAdventuring } from "@/lib/gameLogic"
 import { useSelector } from "@xstate/store-react"
@@ -11,11 +12,16 @@ import { CharacterPanel } from "./CharacterPanel"
 import { LogsPanel } from "./LogsPanel"
 
 export function App() {
+  const gameTimer = useGameTimerNew();
+
   return (
     <div className="flex min-h-svh justify-center p-6">
       <div className="flex max-w-md min-w-0 flex-auto flex-col gap-4 text-sm leading-loose">
         <AppTitle />
-        <DebugTimePanel />
+        <DebugTimePanel
+          running={gameTimer.running}
+          setRunning={gameTimer.setRunning}
+        />
         <PlayerPanel />
         <CharacterPanel />
         <LogsPanel />
@@ -62,7 +68,7 @@ export function AppOld() {
 
   // TODO: WIP
   const { tick, running, lastProcessedMs, pause, resume, resetTimer } =
-    useGameTimer({
+    useGameTimerOld({
       initialRunning: savedState.running,
       initialTick: savedState.tick,
       initialLastProcessedMs: savedState.lastProcessedMs,
