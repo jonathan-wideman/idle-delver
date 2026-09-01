@@ -78,7 +78,7 @@ export function advanceHeroTick(
   let nextHero = hero
   let goldDelta = 0
 
-  // TODO: WIP
+  // DONE
   if (!nextHero.currentTask) {
     if (nextHero.mode === "adventuring") {
       const nextTask = createDungeonTask()

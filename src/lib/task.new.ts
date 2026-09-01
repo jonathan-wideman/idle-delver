@@ -7,7 +7,7 @@ export function newTask(type?: TaskType) {
   const difficulty = taskType === TASK_TYPE.dungeon ? randomInt(2, 10) : null
   return {
     id: crypto.randomUUID() as string,
-    name: `A ${taskType} ${skill} task`,
+    name: `A ${taskType}${skill ? ` ${skill}` : ""} task`,
     type: taskType,
     maxProgress: randomInt(5, 10),
     progress: 0, // TODO: move to new Assignment object, maybe on hero

@@ -36,10 +36,9 @@ export function CharacterPanel() {
                 ))}
               </ul>
             </div>
-            {/* TODO: implement adventure / rest */}
             <Button
               onClick={() => {
-                store.trigger.changeHeroMode({
+                store.trigger.characterChangeMode({
                   characterId: character.id,
                   mode:
                     character.mode === MODE.adventuring
