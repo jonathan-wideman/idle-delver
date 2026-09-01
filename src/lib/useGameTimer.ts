@@ -69,7 +69,7 @@ export default function useGameTimer({
     lastProcessedRef.current = lastProcessedMs
   }, [lastProcessedMs])
 
-  // TODO: WIP
+  // DONE
   const processElapsedTicks = useCallback(
     (reason: string) => {
       const now = Date.now()
@@ -110,7 +110,7 @@ export default function useGameTimer({
     [logMessage]
   )
 
-  // TODO: WIP
+  // DONE
   useEffect(() => {
     if (runningRef.current) {
       const missedTicks = processElapsedTicks("load")
@@ -166,7 +166,7 @@ export default function useGameTimer({
 
   // DONE
   const resume = useCallback(() => {
-    // TODO: WIP
+    // DONE
     const missedTicks = processElapsedTicks("resume")
     if (missedTicks > 0) {
       logMessage(`caught up ${missedTicks} tick(s) on resume`)

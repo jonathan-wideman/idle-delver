@@ -3,19 +3,18 @@ import { store } from "./store.new"
 import { useInterval } from "usehooks-ts"
 
 // TODO: move delay to state, so we can later implement speedup
-const MS_PER_TICK = 1000
+export const MS_PER_TICK = 1000
 
-// export default function useGameTimer({ runOnInit = false }: { runOnInit?: boolean }) {
-export function useGameTimer() {
-  const [running, setRunning] = useState<boolean>(false)
-  // TODO: option for init
-  // const [running, setRunning] = useState<boolean>(runOnInit)
-
-  // TODO: trigger catchup ticks on upause
+export function useGameTimer(runOnInit: boolean = false) {
+  const [running, setRunning] = useState<boolean>(runOnInit)
 
   const toggleRunning = useCallback(
     (value?: boolean) => {
-      setRunning(value ?? !running)
+      const newValue = value ?? !running
+      setRunning(newValue)
+      if (newValue === true) {
+        store.trigger.catchup()
+      }
     },
     [running]
   )

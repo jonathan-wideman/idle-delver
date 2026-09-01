@@ -2,6 +2,7 @@ import { createStore } from "@xstate/store-react"
 import { MODE, newCharacter, type Character, type Mode } from "./character.new"
 import { loadContext } from "./persistence.new"
 import { newTask } from "./task.new"
+import { MS_PER_TICK } from "./useGameTimer.new"
 
 // TODO: extract logs stuff
 export type LogLevel = "info" | "warning" | "error"
@@ -87,8 +88,21 @@ export const store = createStore({
         },
       },
     }),
-    catchup: (context) => {
-      // FIXME: do catchup ticks
+    catchup: (context, _event, enq) => {
+      const deltaTime = Date.now() - context.meta.time.lastTickAt
+      const deltaTicks = Math.floor(deltaTime / MS_PER_TICK)
+      enq.trigger.log({
+        level: "info" as LogLevel,
+        message: `(Not yet implemented) catchup ${deltaTicks} ticks`,
+      })
+      // TODO: do catchup ticks
+      // for (let i = 0; i < deltaTicks; i++) {
+      //   enq.trigger.tick()
+      // }
+      // enq.trigger.log({
+      //   level: "info" as LogLevel,
+      //   message: `Finished ${deltaTicks} catchup ticks`,
+      // })
       return { ...context }
     },
     // TODO: maybe ticks should be outside the game store?
