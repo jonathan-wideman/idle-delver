@@ -1,6 +1,6 @@
 import { createStore } from "@xstate/store-react"
 import { MODE, newCharacter, type Character, type Mode } from "./character.new"
-import { loadContext } from "./persistence.lib"
+import { loadContext } from "./persistence.new"
 import { newTask } from "./task.new"
 
 // TODO: extract logs stuff
