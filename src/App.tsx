@@ -10,6 +10,7 @@ import { store } from "./store"
 import { PlayerPanel } from "./PlayerPanel"
 import { CharacterPanel } from "./CharacterPanel"
 import { LogsPanel } from "./LogsPanel"
+import { DebugStorePanel } from "./DebugStorePanel"
 
 export function App() {
   const gameTimer = useGameTimerNew()
@@ -25,6 +26,7 @@ export function App() {
         <PlayerPanel />
         <CharacterPanel />
         <LogsPanel />
+        <DebugStorePanel />
         <div className="font-mono text-xs text-muted-foreground">
           (Press <kbd>d</kbd> to toggle dark mode)
         </div>
@@ -41,7 +43,7 @@ export function AppOld() {
   // DONE
   const [logs, setLogs] = useState<string[]>([])
 
-  // TODO: WIP
+  // DONE
   const savedState = useMemo(() => loadGameState(), [])
 
   // DONE
@@ -49,7 +51,7 @@ export function AppOld() {
     setLogs((previous) => [message, ...previous].slice(0, 50))
   }, [])
 
-  // TODO: WIP
+  // DONE
   const [heroState, setHeroState] = useState(savedState.hero)
 
   // TODO: WIP
@@ -66,7 +68,7 @@ export function AppOld() {
     [appendLog]
   )
 
-  // TODO: WIP
+  // DONE
   const { tick, running, lastProcessedMs, pause, resume, resetTimer } =
     useGameTimer({
       initialRunning: savedState.running,
@@ -101,7 +103,7 @@ export function AppOld() {
     setHeroState((hero) => startAdventuring(hero))
   }, [])
 
-  // TODO: WIP
+  // DONE
   const resetAll = useCallback(() => {
     resetTimer()
     store.trigger.resetGold()
@@ -145,11 +147,11 @@ export function AppOld() {
             <span className="font-mono">{running ? "Running" : "Paused"}</span>
           </p>
           <div className="mt-2 flex gap-2">
-            {/* TODO: WIP */}
+            {/* DONE */}
             <Button onClick={running ? pause : resume}>
               {running ? "Pause" : "Resume"}
             </Button>
-            {/* TODO: WIP */}
+            {/* DONE */}
             <Button onClick={resetAll}>Reset</Button>
           </div>
 
