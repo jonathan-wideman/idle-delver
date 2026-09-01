@@ -21,8 +21,8 @@ const initialContext = loadContext() ?? {
       ticks: 0,
       lastTickAt: startupTime,
       // TODO: may need to handle timer state outside store
-      paused: false, // PAUSED but will still accumulate catchup ticks
-      stopped: false, // will not accumulate catchup ticks
+      // paused: false, // PAUSED but will still accumulate catchup ticks
+      // stopped: false, // will not accumulate catchup ticks
     },
     logs: [
       // TODO: move to startup script
@@ -53,22 +53,39 @@ const initialContext = loadContext() ?? {
 export const store = createStore({
   context: { ...initialContext },
   on: {
-    log: (context, event: { level: LogLevel; message: string }) => ({
-      ...context,
-      meta: {
-        ...context.meta,
-        logs: [
-          ...context.meta.logs,
-          { level: event.level, timestamp: Date.now(), message: event.message },
-        ],
-      },
-    }),
+    // TODO: make log accept arbitrary message, like console.log
+    log: (context, event: { level: LogLevel; message: string }) => {
+      const log = {
+        level: event.level,
+        timestamp: Date.now(),
+        message: event.message,
+      }
+      console.log(log)
+      return {
+        ...context,
+        meta: {
+          ...context.meta,
+          logs: [...context.meta.logs, log],
+        },
+      }
+    },
     clearLogs: (context) => ({
       ...context,
       meta: {
         ...context.meta,
-        logs: []
-      }
+        logs: [],
+      },
+    }),
+    resetTime: (context) => ({
+      ...context,
+      meta: {
+        ...context.meta,
+        time: {
+          ...context.meta.time,
+          ticks: 0,
+          lastTickAt: Date.now(),
+        },
+      },
     }),
     catchup: (context) => {
       // FIXME: do catchup ticks

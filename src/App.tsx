@@ -12,7 +12,7 @@ import { CharacterPanel } from "./CharacterPanel"
 import { LogsPanel } from "./LogsPanel"
 
 export function App() {
-  const gameTimer = useGameTimerNew();
+  const gameTimer = useGameTimerNew()
 
   return (
     <div className="flex min-h-svh justify-center p-6">
@@ -20,7 +20,7 @@ export function App() {
         <AppTitle />
         <DebugTimePanel
           running={gameTimer.running}
-          setRunning={gameTimer.setRunning}
+          toggleRunning={gameTimer.toggleRunning}
         />
         <PlayerPanel />
         <CharacterPanel />
@@ -68,7 +68,7 @@ export function AppOld() {
 
   // TODO: WIP
   const { tick, running, lastProcessedMs, pause, resume, resetTimer } =
-    useGameTimerOld({
+    useGameTimer({
       initialRunning: savedState.running,
       initialTick: savedState.tick,
       initialLastProcessedMs: savedState.lastProcessedMs,
