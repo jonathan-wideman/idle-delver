@@ -5,7 +5,16 @@ import { newTask } from "./task.new"
 import { MS_PER_TICK } from "./useGameTimer.new"
 
 // TODO: extract logs stuff
-export type LogLevel = "info" | "warning" | "error"
+// export type LogLevel = "debug" | "info" | "gameplay" | "warning" | "error"
+export const LOG_LEVEL = {
+  debug: "debug",
+  info: "info",
+  gameplay: "gameplay",
+  warning: "warning",
+  error: "error",
+} as const
+export const LOG_LEVELS = Object.keys(LOG_LEVEL) as LogLevel[]
+export type LogLevel = (typeof LOG_LEVEL)[keyof typeof LOG_LEVEL]
 export interface LogEntry {
   level: LogLevel
   timestamp: number
@@ -16,6 +25,7 @@ const startupTime = Date.now()
 // TODO: no initial task
 const initialCharacter = newCharacter()
 const initialTask = newTask("dungeon")
+// TODO: we never save state, so we never load it
 const initialContext = loadContext() ?? {
   meta: {
     time: {
@@ -28,7 +38,7 @@ const initialContext = loadContext() ?? {
     logs: [
       // TODO: move to startup script
       {
-        level: "info",
+        level: LOG_LEVEL.gameplay,
         message: "Game started",
         timestamp: startupTime,
       },
@@ -92,7 +102,7 @@ export const store = createStore({
       const deltaTime = Date.now() - context.meta.time.lastTickAt
       const deltaTicks = Math.floor(deltaTime / MS_PER_TICK)
       enq.trigger.log({
-        level: "info" as LogLevel,
+        level: LOG_LEVEL.gameplay,
         message: `(Not yet implemented) catchup ${deltaTicks} ticks`,
       })
       // TODO: do catchup ticks
@@ -100,6 +110,7 @@ export const store = createStore({
       //   enq.trigger.tick()
       // }
       // enq.trigger.log({
+      //   level: LOG_LEVEL.gameplay,
       //   level: "info" as LogLevel,
       //   message: `Finished ${deltaTicks} catchup ticks`,
       // })
@@ -109,7 +120,7 @@ export const store = createStore({
     tick: (context, _event, enq) => {
       const currentTime = Date.now()
 
-      enq.trigger.log({ level: "info" as LogLevel, message: "tick" })
+      enq.trigger.log({ level: LOG_LEVEL.debug, message: "tick" })
 
       // TODO: start next task
       // - resting

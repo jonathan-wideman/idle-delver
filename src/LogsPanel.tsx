@@ -1,7 +1,7 @@
 import { useSelector } from "@xstate/store-react"
 import { Panel } from "./components/custom/hoc/Panel"
 import { PanelTitle } from "./components/custom/hoc/PanelTitle"
-import { store, type LogEntry } from "./lib/store.new"
+import { LOG_LEVEL, store, type LogEntry } from "./lib/store.new"
 import { useMemo, useState } from "react"
 import { Button } from "./components/ui/button"
 
@@ -26,6 +26,9 @@ export function LogsPanel() {
             </span>
           )}
           <span className="text-xs text-muted-foreground"> • </span>
+          <span className="rounded-sm bg-muted px-1.25 text-xs text-muted-foreground uppercase">
+            {line.level}
+          </span>{" "}
           {line.message}
         </div>
       )),
@@ -40,7 +43,7 @@ export function LogsPanel() {
       </Button>
       <Button
         onClick={() => {
-          store.trigger.log({ level: "info", message: "test log" })
+          store.trigger.log({ level: LOG_LEVEL.debug, message: "test log" })
         }}
       >
         Test Log
