@@ -98,7 +98,7 @@ export function AppOld() {
     })
   }, [tick, running, gold, lastProcessedMs, heroState])
 
-  // TODO: WIP
+  // DONE
   const handleStartAdventure = useCallback(() => {
     setHeroState((hero) => startAdventuring(hero))
   }, [])
@@ -187,7 +187,7 @@ export function AppOld() {
             </>
           ) : null}
           <div className="mt-2 flex gap-2">
-            {/* TODO: WIP */}
+            {/* DONE */}
             <Button
               onClick={handleStartAdventure}
               disabled={heroHp < 1 || heroMode === "adventuring"}

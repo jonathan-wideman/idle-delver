@@ -38,7 +38,15 @@ export function CharacterPanel() {
             </div>
             {/* TODO: implement adventure / rest */}
             <Button
-              onClick={() => {}}
+              onClick={() => {
+                store.trigger.changeHeroMode({
+                  characterId: character.id,
+                  mode:
+                    character.mode === MODE.adventuring
+                      ? MODE.resting
+                      : MODE.adventuring,
+                })
+              }}
               disabled={character.mode === MODE.resting && character.hp < 1}
             >
               Go {character.mode === MODE.adventuring ? "Rest" : "Adventure"}
