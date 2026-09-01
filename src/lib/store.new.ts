@@ -124,10 +124,10 @@ export const store = createStore({
 
       // FIXME: support multiple characters
       const character = context.characters[0]
-      
+
       if (!character.currentTaskId) {
         // if the character doesn't have a task, start a new one
-        enq.trigger.newCharaxterTask({ characterId: context.characters[0].id })
+        enq.trigger.newCharacterTask({ characterId: context.characters[0].id })
       }
 
       // TODO: progress task
@@ -137,8 +137,17 @@ export const store = createStore({
       //     dungeon: roll skill, reward gold or lose hp
       //   else apply progress
 
-      // TODO: downed hero
-      // If hero is down, stop adventuring
+      if (character.hp <= 0 && character.mode === MODE.adventuring) {
+        // if the character is down, stop adventuring
+        enq.trigger.log({
+          level: LOG_LEVEL.gameplay,
+          message: `${character.name} is down`,
+        })
+        enq.trigger.characterChangeMode({
+          characterId: character.id,
+          mode: MODE.resting,
+        })
+      }
 
       return {
         ...context,
@@ -152,7 +161,7 @@ export const store = createStore({
         },
       }
     },
-    newCharaxterTask: (context, event: { characterId: string }, enq) => {
+    newCharacterTask: (context, event: { characterId: string }, enq) => {
       const character = context.characters.find(
         (c: Character) => c.id === event.characterId
       )
@@ -203,8 +212,17 @@ export const store = createStore({
     }),
     characterTakeDamage: (
       context,
-      event: { characterId: string; amount?: number }
+      event: { characterId: string; amount?: number },
+      enq
     ) => {
+      const character = context.characters.find(
+        (c: Character) => c.id === event.characterId
+      )
+      // TODO: only log if hp actually changed
+      enq.trigger.log({
+        level: LOG_LEVEL.gameplay,
+        message: `${character?.name} took ${event.amount} damage`,
+      })
       return {
         ...context,
         characters: context.characters.map((c: Character) =>
@@ -214,7 +232,32 @@ export const store = createStore({
         ),
       }
     },
-    characterMode: (context, event: { characterId: string; mode: Mode }) => {
+    characterHeal: (
+      context,
+      event: { characterId: string; amount?: number },
+      enq
+    ) => {
+      const character = context.characters.find(
+        (c: Character) => c.id === event.characterId
+      )
+      // TODO: only log if hp actually changed
+      enq.trigger.log({
+        level: LOG_LEVEL.gameplay,
+        message: `${character?.name} healed ${event.amount} hp`,
+      })
+      return {
+        ...context,
+        characters: context.characters.map((c: Character) =>
+          c.id === event.characterId
+            ? { ...c, hp: Math.min(c.maxHp, c.hp + (event.amount ?? 0)) }
+            : c
+        ),
+      }
+    },
+    characterChangeMode: (
+      context,
+      event: { characterId: string; mode: Mode }
+    ) => {
       const character = context.characters.find(
         (c: Character) => c.id === event.characterId
       )

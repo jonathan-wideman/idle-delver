@@ -24,7 +24,27 @@ export function CharacterPanel() {
           <>
             <div>Name: {character.name}</div>
             <div>
-              HP: {character.hp}/{character.maxHp}
+              HP: {character.hp}/{character.maxHp}{" "}
+              <Button
+                onClick={() => {
+                  store.trigger.characterTakeDamage({
+                    characterId: character.id,
+                    amount: 1,
+                  })
+                }}
+              >
+                Damage
+              </Button>
+              <Button
+                onClick={() => {
+                  store.trigger.characterHeal({
+                    characterId: character.id,
+                    amount: 1,
+                  })
+                }}
+              >
+                Heal
+              </Button>
             </div>
             <div>
               Skills:

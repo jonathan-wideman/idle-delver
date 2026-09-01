@@ -52,7 +52,7 @@ export function startAdventuring(hero: HeroState): HeroState {
   return {
     ...hero,
     mode: "adventuring",
-    // TODO: MAYBE; do we need to assign hero a task, or just wait for next tick?
+    // DONE: OMIT - just wait for next tick
     currentTask: createDungeonTask(),
   }
 }
@@ -161,7 +161,7 @@ export function advanceHeroTick(
   const nextHp = nextHero.hp - 1
   appendLog(`Failed challenge: lost 1 HP (${nextHero.hp} → ${nextHp})`)
 
-  // TODO: WIP
+  // DONE
   if (nextHp <= 0) {
     appendLog("Hero is down and returns to resting.")
     nextHero = {
