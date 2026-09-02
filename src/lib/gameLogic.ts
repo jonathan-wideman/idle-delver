@@ -70,7 +70,7 @@ export function stopAdventuring(hero: HeroState): HeroState {
   }
 }
 
-// TODO: WIP
+// DONE
 export function advanceHeroTick(
   hero: HeroState,
   appendLog: (message: string) => void
@@ -103,17 +103,17 @@ export function advanceHeroTick(
     }
   }
 
-  // TODO: WIP
+  // DONE
   const task = nextHero.currentTask
   if (!task) {
     return { hero: nextHero, goldDelta }
   }
 
-  // TODO: WIP
+  // DONE
   const progress = task.progress + 1
   const updatedTask = { ...task, progress }
 
-  // TODO: WIP
+  // DONE
   if (progress < task.requiredTicks) {
     appendLog(
       `Progressed ${task.type} task: ${progress}/${task.requiredTicks} tick(s)`
@@ -125,7 +125,7 @@ export function advanceHeroTick(
     return { hero: nextHero, goldDelta }
   }
 
-  // TODO: WIP
+  // DONE
   if (task.type === "healing") {
     const newHp = Math.min(nextHero.maxHp, nextHero.hp + 1)
     appendLog(`Healing complete: restored 1 HP (${nextHero.hp} → ${newHp})`)
@@ -137,7 +137,7 @@ export function advanceHeroTick(
     return { hero: nextHero, goldDelta }
   }
 
-  // TODO: WIP
+  // DONE
   const skill = task.skill!
   const die = skillDice[skill]
   const roll = randomInt(1, die)
@@ -146,7 +146,7 @@ export function advanceHeroTick(
     `Dungeon task complete: rolled ${roll} on d${die} vs difficulty ${difficulty}`
   )
 
-  // TODO: WIP
+  // DONE
   if (roll >= difficulty) {
     goldDelta = difficulty
     appendLog(`Success! Earned ${difficulty} gold.`)
@@ -157,7 +157,7 @@ export function advanceHeroTick(
     return { hero: nextHero, goldDelta }
   }
 
-  // TODO: WIP
+  // DONE
   const nextHp = nextHero.hp - 1
   appendLog(`Failed challenge: lost 1 HP (${nextHero.hp} → ${nextHp})`)
 
@@ -173,7 +173,7 @@ export function advanceHeroTick(
     return { hero: nextHero, goldDelta }
   }
 
-  // TODO: WIP
+  // DONE
   nextHero = {
     ...nextHero,
     hp: nextHp,

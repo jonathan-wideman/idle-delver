@@ -1,8 +1,15 @@
 import { createStore } from "@xstate/store-react"
-import { MODE, newCharacter, type Character, type Mode } from "./character.new"
+import {
+  MODE,
+  newCharacter,
+  type Character,
+  type Mode,
+  type Skill,
+} from "./character.new"
 import { loadContext } from "./persistence.new"
 import { newTask, TASK_TYPE, type Task } from "./task.new"
 import { MS_PER_TICK } from "./useGameTimer.new"
+import { rollDie } from "./rng.new"
 
 // TODO: extract logs stuff
 // export type LogLevel = "debug" | "info" | "gameplay" | "warning" | "error"
@@ -128,6 +135,9 @@ export const store = createStore({
       if (!character.currentTaskId) {
         // if the character doesn't have a task, start a new one
         enq.trigger.newCharacterTask({ characterId: context.characters[0].id })
+      } else {
+        // if the character has a task, progress it
+        enq.trigger.progressCharacterTask({ characterId: character.id })
       }
 
       // TODO: progress task
@@ -203,13 +213,140 @@ export const store = createStore({
         },
       }
     },
-    gainMoney: (context, event: { amount?: number }) => ({
-      ...context,
-      player: {
-        ...context.player,
-        money: context.player.money + (event.amount ?? 0),
-      },
-    }),
+    progressCharacterTask: (context, event: { characterId: string }, enq) => {
+      const character: Character | undefined = context.characters.find(
+        (c: Character) => c.id === event.characterId
+      )
+      if (!character) {
+        enq.trigger.log({
+          level: LOG_LEVEL.warning,
+          message: `No character with id ${event.characterId}`,
+        })
+        return context
+      }
+      const task: Task | undefined = context.world.tasks.find(
+        (t: Task) => t.id === character.currentTaskId
+      )
+      if (!task) {
+        enq.trigger.log({
+          level: LOG_LEVEL.warning,
+          message: `No task with id ${character.currentTaskId}`,
+        })
+        return context
+      }
+
+      if (task.progress >= task.maxProgress) {
+        enq.trigger.completeCharacterTask({ characterId: character.id })
+        return context
+      }
+
+      //   else apply progress
+      const PROGRESS_PER_TICK = 1
+      enq.trigger.log({
+        level: LOG_LEVEL.debug,
+        message: `${character.name} progressed ${task.name}`,
+      })
+      return {
+        ...context,
+        world: {
+          ...context.world,
+          tasks: context.world.tasks.map((t: Task) =>
+            t.id === task.id
+              ? { ...t, progress: t.progress + PROGRESS_PER_TICK }
+              : t
+          ),
+        },
+      }
+    },
+    completeCharacterTask: (context, event: { characterId: string }, enq) => {
+      const character: Character | undefined = context.characters.find(
+        (c: Character) => c.id === event.characterId
+      )
+      if (!character) {
+        enq.trigger.log({
+          level: LOG_LEVEL.warning,
+          message: `No character with id ${event.characterId}`,
+        })
+        return context
+      }
+      const task: Task | undefined = context.world.tasks.find(
+        (t: Task) => t.id === character.currentTaskId
+      )
+      if (!task) {
+        enq.trigger.log({
+          level: LOG_LEVEL.warning,
+          message: `No task with id ${character.currentTaskId}`,
+        })
+        return context
+      }
+
+      // TODO: extract
+      if (task.type === TASK_TYPE.healing) {
+        enq.trigger.log({
+          level: LOG_LEVEL.gameplay,
+          message: `${character.name} completed ${task.name}`,
+        })
+        const TASK_REWARD_HP = 1
+        enq.trigger.characterHeal({
+          characterId: character.id,
+          amount: TASK_REWARD_HP,
+        })
+      }
+      if (task.type === TASK_TYPE.dungeon) {
+        const taskSkill = task.skill as Skill
+        const die = character.skills[taskSkill]
+        const difficulty = task.difficulty as number
+        const roll = rollDie(die)
+        enq.trigger.log({
+          level: LOG_LEVEL.gameplay,
+          message: `${character.name} rolled ${roll} ${taskSkill} on ${task.name} vs ${difficulty}`,
+        })
+        if (roll >= difficulty) {
+          enq.trigger.log({
+            level: LOG_LEVEL.gameplay,
+            message: `${character.name} succeeded ${task.name}`,
+          })
+          const TASK_REWARD_GOLD = task.difficulty
+          enq.trigger.gainMoney({ amount: TASK_REWARD_GOLD })
+        } else {
+          enq.trigger.log({
+            level: LOG_LEVEL.gameplay,
+            message: `${character.name} failed ${task.name}`,
+          })
+          const TASK_PENALTY_HP = 1
+          enq.trigger.characterTakeDamage({
+            characterId: character.id,
+            amount: TASK_PENALTY_HP,
+          })
+        }
+      }
+
+      // TODO: rather than remove tasks right away,
+      // let them sit completed for a bit so the player can see the results
+      return {
+        ...context,
+        characters: context.characters.map((c: Character) =>
+          c.id === event.characterId ? { ...c, currentTaskId: null } : c
+        ),
+        world: {
+          ...context.world,
+          tasks: context.world.tasks.filter((t: Task) => t.id !== task.id),
+        },
+      }
+    },
+    gainMoney: (context, event: { amount?: number }, enq) => {
+      enq.trigger.log({
+        level: LOG_LEVEL.gameplay,
+        message: `Gained ${event.amount} gold`,
+      })
+      return {
+        ...context,
+        player: {
+          ...context.player,
+          money: context.player.money + (event.amount ?? 0),
+        },
+      }
+    },
     characterTakeDamage: (
       context,
       event: { characterId: string; amount?: number },

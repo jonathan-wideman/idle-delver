@@ -54,7 +54,7 @@ export function AppOld() {
   // DONE
   const [heroState, setHeroState] = useState(savedState.hero)
 
-  // TODO: WIP
+  // DONE
   const handleTick = useCallback(
     (nextTick: number) => {
       setHeroState((hero) => {
