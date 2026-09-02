@@ -131,23 +131,6 @@ export const store = createStore({
 
       // FIXME: support multiple characters
       const character = context.characters[0]
-
-      if (!character.currentTaskId) {
-        // if the character doesn't have a task, start a new one
-        enq.trigger.newCharacterTask({ characterId: context.characters[0].id })
-      } else {
-        // if the character has a task, progress it
-        enq.trigger.progressCharacterTask({ characterId: character.id })
-      }
-
-      // TODO: progress task
-      // if the hero has a task
-      //   if task complete:
-      //     healing: restore 1 hp
-      //     dungeon: roll skill, reward gold or lose hp
-      //   else apply progress
-
-      // FIXME: it seems like a downed character still starts a new dungeon task
       if (character.hp <= 0 && character.mode === MODE.adventuring) {
         // if the character is down, stop adventuring
         enq.trigger.log({
@@ -158,6 +141,16 @@ export const store = createStore({
           characterId: character.id,
           mode: MODE.resting,
         })
+      } else {
+        if (!character.currentTaskId) {
+          // if the character doesn't have a task, start a new one
+          enq.trigger.newCharacterTask({
+            characterId: context.characters[0].id,
+          })
+        } else {
+          // if the character has a task, progress it
+          enq.trigger.progressCharacterTask({ characterId: character.id })
+        }
       }
 
       return {
