@@ -147,6 +147,7 @@ export const store = createStore({
       //     dungeon: roll skill, reward gold or lose hp
       //   else apply progress
 
+      // FIXME: it seems like a downed character still starts a new dungeon task
       if (character.hp <= 0 && character.mode === MODE.adventuring) {
         // if the character is down, stop adventuring
         enq.trigger.log({
