@@ -370,11 +370,26 @@ export const store = createStore({
       const character = context.characters.find(
         (c: Character) => c.id === event.characterId
       )
-      // TODO: only log if hp actually changed
-      enq.trigger.log({
-        level: LOG_LEVEL.gameplay,
-        message: `❤️‍🩹 ${character?.name} healed ${event.amount} hp`,
-      })
+      const alreadyFullyHealed = character?.hp === character?.maxHp
+      if (alreadyFullyHealed) {
+        enq.trigger.log({
+          level: LOG_LEVEL.gameplay,
+          message: `🩶 ${character?.name} is already fully healed`,
+        })
+      } else {
+        enq.trigger.log({
+          level: LOG_LEVEL.gameplay,
+          message: `❤️‍🩹 ${character?.name} healed ${event.amount} hp`,
+        })
+        const willBeFullyHealed =
+          character?.hp + (event.amount ?? 0) >= character?.maxHp
+        if (willBeFullyHealed) {
+          enq.trigger.log({
+            level: LOG_LEVEL.gameplay,
+            message: `💖 ${character?.name} is fully healed`,
+          })
+        }
+      }
       return {
         ...context,
         characters: context.characters.map((c: Character) =>
@@ -386,18 +401,22 @@ export const store = createStore({
     },
     characterChangeMode: (
       context,
-      event: { characterId: string; mode: Mode }
+      event: { characterId: string; mode: Mode },
+      enq
     ) => {
       const character = context.characters.find(
         (c: Character) => c.id === event.characterId
       )
 
-      // TODO: logs?
-
       // Prevent adventuring at zero hp
       if (event.mode === MODE.adventuring && character?.hp < 1) {
         return context
       }
+
+      enq.trigger.log({
+        level: LOG_LEVEL.gameplay,
+        message: `${event.mode === MODE.adventuring ? "⚔️" : "🛏️"} ${character?.name} started ${event.mode}`,
+      })
 
       return {
         ...context,
