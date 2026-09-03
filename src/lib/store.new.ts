@@ -32,8 +32,7 @@ const startupTime = Date.now()
 // TODO: no initial task
 const initialCharacter = newCharacter()
 const initialTask = newTask("dungeon")
-// TODO: we never save state, so we never load it
-const initialContext = loadContext() ?? {
+const defaultContext = {
   meta: {
     time: {
       ticks: 0,
@@ -46,14 +45,13 @@ const initialContext = loadContext() ?? {
       // TODO: move to startup script
       {
         level: LOG_LEVEL.gameplay,
-        message: "Game started",
+        message: "☀️ Game started",
         timestamp: startupTime,
       },
     ] as LogEntry[],
   },
   world: {
     tasks: [
-      // TODO: no initial task
       // { ...initialTask },
     ],
   },
@@ -67,6 +65,7 @@ const initialContext = loadContext() ?? {
     },
   ],
 }
+const initialContext = loadContext() ?? defaultContext
 
 export const store = createStore({
   context: { ...initialContext },

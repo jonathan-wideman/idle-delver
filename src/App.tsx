@@ -87,7 +87,7 @@ export function AppOld() {
     [logs]
   )
 
-  // TODO: WIP
+  // DONE
   useEffect(() => {
     saveGameState({
       tick,

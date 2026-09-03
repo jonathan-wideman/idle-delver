@@ -1,6 +1,7 @@
 import { useCallback, useState } from "react"
 import { store } from "./store.new"
 import { useInterval } from "usehooks-ts"
+import { saveContext } from "./persistence.new"
 
 // TODO: move delay to state, so we can later implement speedup
 export const MS_PER_TICK = 1000
@@ -22,6 +23,7 @@ export function useGameTimer(runOnInit: boolean = false) {
   useInterval(
     () => {
       store.trigger.tick()
+      saveContext()
     },
     // Delay in milliseconds or null to stop it
     running ? MS_PER_TICK : null
