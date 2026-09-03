@@ -109,7 +109,7 @@ export const store = createStore({
       const deltaTicks = Math.floor(deltaTime / MS_PER_TICK)
       enq.trigger.log({
         level: LOG_LEVEL.gameplay,
-        message: `(Not yet implemented) catchup ${deltaTicks} ticks`,
+        message: `⏩ (Not yet implemented) catchup ${deltaTicks} ticks`,
       })
       // TODO: do catchup ticks
       // for (let i = 0; i < deltaTicks; i++) {
@@ -134,7 +134,7 @@ export const store = createStore({
         // if the character is down, stop adventuring
         enq.trigger.log({
           level: LOG_LEVEL.gameplay,
-          message: `${character.name} is down`,
+          message: `💫 ${character.name} is down`,
         })
         enq.trigger.characterChangeMode({
           characterId: character.id,
@@ -191,7 +191,7 @@ export const store = createStore({
 
       enq.trigger.log({
         level: LOG_LEVEL.gameplay,
-        message: `${character.name} started ${task.name}`,
+        message: `▶️ ${character.name} started ${task.name}`,
       })
 
       // TODO: also drop existing task?
@@ -277,7 +277,7 @@ export const store = createStore({
       if (task.type === TASK_TYPE.healing) {
         enq.trigger.log({
           level: LOG_LEVEL.gameplay,
-          message: `${character.name} completed ${task.name}`,
+          message: `⏹️ ${character.name} completed ${task.name}`,
         })
         const TASK_REWARD_HP = 1
         enq.trigger.characterHeal({
@@ -292,19 +292,19 @@ export const store = createStore({
         const roll = rollDie(die)
         enq.trigger.log({
           level: LOG_LEVEL.gameplay,
-          message: `${character.name} rolled ${roll} ${taskSkill} on ${task.name} vs ${difficulty}`,
+          message: `🎲 ${character.name} rolled ${roll} ${taskSkill} on ${task.name} vs ${difficulty}`,
         })
         if (roll >= difficulty) {
           enq.trigger.log({
             level: LOG_LEVEL.gameplay,
-            message: `${character.name} succeeded ${task.name}`,
+            message: `✅ ${character.name} succeeded ${task.name}`,
           })
           const TASK_REWARD_GOLD = task.difficulty
           enq.trigger.gainMoney({ amount: TASK_REWARD_GOLD })
         } else {
           enq.trigger.log({
             level: LOG_LEVEL.gameplay,
-            message: `${character.name} failed ${task.name}`,
+            message: `❌ ${character.name} failed ${task.name}`,
           })
           const TASK_PENALTY_HP = 1
           enq.trigger.characterTakeDamage({
@@ -330,7 +330,7 @@ export const store = createStore({
     gainMoney: (context, event: { amount?: number }, enq) => {
       enq.trigger.log({
         level: LOG_LEVEL.gameplay,
-        message: `Gained ${event.amount} gold`,
+        message: `🪙 Gained ${event.amount} gold`,
       })
       return {
         ...context,
@@ -351,7 +351,7 @@ export const store = createStore({
       // TODO: only log if hp actually changed
       enq.trigger.log({
         level: LOG_LEVEL.gameplay,
-        message: `${character?.name} took ${event.amount} damage`,
+        message: `💔 ${character?.name} took ${event.amount} damage`,
       })
       return {
         ...context,
@@ -373,7 +373,7 @@ export const store = createStore({
       // TODO: only log if hp actually changed
       enq.trigger.log({
         level: LOG_LEVEL.gameplay,
-        message: `${character?.name} healed ${event.amount} hp`,
+        message: `❤️‍🩹 ${character?.name} healed ${event.amount} hp`,
       })
       return {
         ...context,
