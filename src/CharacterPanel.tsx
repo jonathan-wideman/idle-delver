@@ -24,7 +24,11 @@ export function CharacterPanel() {
           <>
             <div>Name: {character.name}</div>
             <div>
-              HP: {character.hp}/{character.maxHp}{" "}
+              HP:{" "}
+              {[...new Array(character.maxHp)].map((_, i) => (
+                <span key={i}>{i < character.hp ? "❤️" : "🖤"}</span>
+              ))}{" "}
+              {character.hp}/{character.maxHp}{" "}
               <Button
                 onClick={() => {
                   store.trigger.characterTakeDamage({
