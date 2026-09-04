@@ -16,6 +16,7 @@ export function LogsPanel() {
     store,
     (state) => state.context.meta.logs
   ) as LogEntry[]
+  const [showDetails, setShowDetails] = useState(false)
   const [showTimeMs, setShowTimeMs] = useState(false)
   const [filterMinLevel, setFilterMinLevel] = useState<LogLevel>(
     LOG_LEVEL.gameplay
@@ -36,28 +37,35 @@ export function LogsPanel() {
     () =>
       recentLogs.map((line, index) => (
         <div key={`${index}-${line}`}>
-          <span className="text-xs text-muted-foreground">
-            {new Date(line.timestamp).toLocaleTimeString()}
-          </span>{" "}
-          {showTimeMs && (
-            <span className="text-xs text-muted-foreground">
-              ({line.timestamp})
-            </span>
-          )}
-          <span className="text-xs text-muted-foreground"> • </span>
-          <span className="rounded-sm bg-muted px-1.25 text-xs text-muted-foreground uppercase">
-            {line.level}
-          </span>{" "}
+          {showDetails && (
+            <>
+              <span className="text-xs text-muted-foreground">
+                {new Date(line.timestamp).toLocaleTimeString()}
+              </span>{" "}
+              {showTimeMs && (
+                <span className="text-xs text-muted-foreground">
+                  ({line.timestamp})
+                </span>
+              )}
+              <span className="text-xs text-muted-foreground"> • </span>
+              <span className="rounded-sm bg-muted px-1.25 text-xs text-muted-foreground uppercase">
+                {line.level}
+              </span>
+            </>
+          )}{" "}
           {line.message}
         </div>
       )),
-    [recentLogs, showTimeMs]
+    [recentLogs, showDetails, showTimeMs]
   )
 
   return (
     <Panel>
       <PanelTitle>Logs Panel</PanelTitle>
       <div>
+        <Button onClick={() => setShowDetails(!showDetails)}>
+          {showDetails ? "Hide" : "Show"} Details
+        </Button>
         <Button onClick={() => setShowTimeMs(!showTimeMs)}>
           {showTimeMs ? "Hide" : "Show"} MS
         </Button>
