@@ -9,7 +9,7 @@ import {
 import { loadContext } from "./persistence.new"
 import { newTask, TASK_TYPE, type Task } from "./task.new"
 import { MS_PER_TICK } from "./useGameTimer.new"
-import { rollDie } from "./rng.new"
+import { choose, rollDie } from "./rng.new"
 
 // TODO: extract logs stuff
 // export type LogLevel = "debug" | "info" | "gameplay" | "warning" | "error"
@@ -287,14 +287,14 @@ export const store = createStore({
       }
       if (task.type === TASK_TYPE.dungeon) {
         const taskSkill = task.skill as Skill
-        const die = character.skills[taskSkill]
+        const skill = character.skills[taskSkill]
         const difficulty = task.difficulty as number
-        const roll = rollDie(die)
+        const result = choose(skill)
         enq.trigger.log({
           level: LOG_LEVEL.gameplay,
-          message: `🎲 ${character.name} rolled ${roll} ${taskSkill} on ${task.name} vs ${difficulty}`,
+          message: `🃏 ${character.name} got ${result} vs ${difficulty} ${taskSkill} on ${task.name}`,
         })
-        if (roll >= difficulty) {
+        if (result >= difficulty) {
           enq.trigger.log({
             level: LOG_LEVEL.gameplay,
             message: `✅ ${character.name} succeeded ${task.name}`,

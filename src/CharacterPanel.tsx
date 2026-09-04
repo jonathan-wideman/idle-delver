@@ -53,9 +53,9 @@ export function CharacterPanel() {
             <div>
               Skills:
               <ul className="list-outside list-disc pl-8">
-                {Object.entries(character.skills).map(([skill, value]) => (
+                {Object.entries(character.skills).map(([skill, values]) => (
                   <li key={skill} className="-indent-1">
-                    {skill}: {value}
+                    {skill}: {values.join(", ")}
                   </li>
                 ))}
               </ul>

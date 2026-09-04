@@ -6,10 +6,10 @@ export function newCharacter() {
     maxHp: 3,
     skills: {
       // TODO: random skills
-      combat: 10,
-      exploration: 8,
-      social: 6,
-    } as Record<Skill, number>,
+      combat: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10],
+      exploration: [1, 2, 3, 4, 5, 6, 7, 8],
+      social: [1, 2, 3, 4, 5, 6],
+    } as Record<Skill, number[]>,
     mode: MODE.resting as Mode,
     currentTaskId: null as string | null,
   }
