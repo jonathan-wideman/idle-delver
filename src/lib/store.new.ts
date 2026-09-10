@@ -348,7 +348,7 @@ export const store = createStore({
     gainEther: (context, event: { amount?: number }, enq) => {
       enq.trigger.log({
         level: LOG_LEVEL.gameplay,
-        message: `⌛ Gained ${event.amount} ether`,
+        message: `⏳ Gained ${event.amount} ether`,
       })
       return {
         ...context,

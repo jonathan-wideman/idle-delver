@@ -11,6 +11,8 @@ import { PlayerPanel } from "./PlayerPanel"
 import { CharacterPanel } from "./CharacterPanel"
 import { LogsPanel } from "./LogsPanel"
 import { DebugStorePanel } from "./DebugStorePanel"
+import { PlayerWidget } from "./PlayerWidget"
+import { TimeWidget } from "./TimeWidget"
 
 export function App() {
   const gameTimer = useGameTimerNew()
@@ -18,12 +20,22 @@ export function App() {
   return (
     <div className="flex min-h-svh justify-center p-6">
       <div className="flex max-w-md min-w-0 flex-auto flex-col gap-4 text-sm leading-loose">
-        <AppTitle />
-        <DebugTimePanel
+        <NavBar>
+          <AppTitle />
+          <div className="flex items-center gap-1">
+            <PlayerWidget />
+            <TimeWidget
+              running={gameTimer.running}
+              toggleRunning={gameTimer.toggleRunning}
+            />
+          </div>
+        </NavBar>
+        {/* TODO: toggleable panels */}
+        {/* <DebugTimePanel
           running={gameTimer.running}
           toggleRunning={gameTimer.toggleRunning}
-        />
-        <PlayerPanel />
+        /> */}
+        {/* <PlayerPanel /> */}
         <CharacterPanel />
         <LogsPanel />
         <DebugStorePanel />
@@ -32,6 +44,12 @@ export function App() {
         </div>
       </div>
     </div>
+  )
+}
+
+function NavBar({ children }: { children: React.ReactNode }) {
+  return (
+    <div className="flex items-center justify-between gap-4">{children}</div>
   )
 }
 
