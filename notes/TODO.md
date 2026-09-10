@@ -20,6 +20,7 @@ TODO:
 - [ ] Instead of catchup ticks, time away accrues the ability to speed up time while active
 - [ ] Time speed up should only count as spent if something happens during that time, ie progress towards a task either in town or dungeon
 - [ ] And/or implement a max time away to also run catchup ticks
+- [ ] Should also have max on time away currency stored
 
 ## Loot
 - [ ] Show preview of what items are upgrades / can be freely sold

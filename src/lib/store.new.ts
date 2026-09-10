@@ -57,6 +57,7 @@ const defaultContext = {
   },
   player: {
     money: 0,
+    ether: 0,
   },
   characters: [
     {
@@ -111,6 +112,8 @@ export const store = createStore({
         level: LOG_LEVEL.gameplay,
         message: `⏩ (Not yet implemented) catchup ${deltaTicks} ticks`,
       })
+      // Gain ether for time away
+      enq.trigger.gainEther({ amount: deltaTicks })
       // TODO: do catchup ticks
       // for (let i = 0; i < deltaTicks; i++) {
       //   enq.trigger.tick()
@@ -120,6 +123,8 @@ export const store = createStore({
       //   level: "info" as LogLevel,
       //   message: `Finished ${deltaTicks} catchup ticks`,
       // })
+
+
       return { ...context }
     },
     // TODO: maybe ticks should be outside the game store?
@@ -337,6 +342,19 @@ export const store = createStore({
         player: {
           ...context.player,
           money: context.player.money + (event.amount ?? 0),
+        },
+      }
+    },
+    gainEther: (context, event: { amount?: number }, enq) => {
+      enq.trigger.log({
+        level: LOG_LEVEL.gameplay,
+        message: `⌛ Gained ${event.amount} ether`,
+      })
+      return {
+        ...context,
+        player: {
+          ...context.player,
+          ether: context.player.ether + (event.amount ?? 0),
         },
       }
     },

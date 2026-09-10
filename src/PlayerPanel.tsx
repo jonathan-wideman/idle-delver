@@ -4,12 +4,20 @@ import { PanelTitle } from "./components/custom/hoc/PanelTitle"
 import { store } from "./lib/store.new"
 
 export function PlayerPanel() {
-  const money = useSelector(store, (state) => state.context.player.money) as number
+  const money = useSelector(
+    store,
+    (state) => state.context.player.money
+  ) as number
+  const ether = useSelector(
+    store,
+    (state) => state.context.player.ether
+  ) as number
 
   return (
     <Panel>
       <PanelTitle>Player Panel</PanelTitle>
       <div>Gold: {money}</div>
+      <div>Ether: {ether}</div>
     </Panel>
   )
 }
