@@ -2,9 +2,10 @@ import { useSelector } from "@xstate/store-react"
 import { Panel } from "./components/custom/hoc/Panel"
 import { PanelTitle } from "./components/custom/hoc/PanelTitle"
 import { store } from "./lib/store.new"
-import { MODE, type Character } from "./lib/character.new"
+import { formatCard, MODE, type Character } from "./lib/character.new"
 import type { Task } from "./lib/task.new"
 import { Button } from "./components/ui/button"
+import { twMerge } from "tailwind-merge"
 
 export function CharacterPanel() {
   const character = useSelector(
@@ -55,7 +56,22 @@ export function CharacterPanel() {
               <ul className="list-outside list-disc pl-8">
                 {Object.entries(character.skills).map(([skill, values]) => (
                   <li key={skill} className="-indent-1">
-                    {skill}: {values.join(", ")}
+                    {skill}:{" "}
+                    {values.map((card, index) => (
+                      <span
+                        key={index}
+                        className={twMerge(
+                          "my-0.5 mr-1 inline-block h-8 w-6 rounded-sm border bg-accent text-center",
+                          {
+                            add: "text-emerald-200",
+                            subtract: "text-rose-200",
+                            number: null,
+                          }[card.type]
+                        )}
+                      >
+                        {formatCard(card)}
+                      </span>
+                    ))}
                   </li>
                 ))}
               </ul>

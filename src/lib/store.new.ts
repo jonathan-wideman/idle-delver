@@ -1,7 +1,10 @@
 import { createStore } from "@xstate/store-react"
 import {
+  drawCards,
+  formatCard,
   MODE,
   newCharacter,
+  resolveCardsResult,
   type Character,
   type Mode,
   type Skill,
@@ -123,7 +126,6 @@ export const store = createStore({
       //   level: "info" as LogLevel,
       //   message: `Finished ${deltaTicks} catchup ticks`,
       // })
-
 
       return { ...context }
     },
@@ -294,10 +296,15 @@ export const store = createStore({
         const taskSkill = task.skill as Skill
         const skill = character.skills[taskSkill]
         const difficulty = task.difficulty as number
-        const result = choose(skill)
+        const cards = drawCards(skill)
+        const result = resolveCardsResult(cards)
         enq.trigger.log({
           level: LOG_LEVEL.gameplay,
-          message: `🃏 ${character.name} got ${result} vs ${difficulty} ${taskSkill} on ${task.name}`,
+          message: `🃏 ${character.name} drew ${cards
+            .map((card) => formatCard(card))
+            .join(
+              ", "
+            )} = ${result} vs ${difficulty} ${taskSkill} on ${task.name}`,
         })
         if (result >= difficulty) {
           enq.trigger.log({
