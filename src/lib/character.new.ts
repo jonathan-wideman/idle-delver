@@ -1,4 +1,4 @@
-import { randomInt } from "./rng.new"
+import { randomInt, rng } from "./rng.new"
 
 export function newCharacter() {
   return {
@@ -6,45 +6,31 @@ export function newCharacter() {
     name: "Leroy Jenkins",
     hp: 3,
     maxHp: 3,
-    skills: {
-      // TODO: random skills
-      combat: [
-        { type: CARD_TYPE.add, value: 1 },
-        { type: CARD_TYPE.number, value: 1 },
-        { type: CARD_TYPE.number, value: 2 },
-        { type: CARD_TYPE.number, value: 3 },
-        { type: CARD_TYPE.number, value: 4 },
-        { type: CARD_TYPE.number, value: 5 },
-        { type: CARD_TYPE.number, value: 6 },
-        { type: CARD_TYPE.number, value: 7 },
-        { type: CARD_TYPE.number, value: 8 },
-        { type: CARD_TYPE.number, value: 9 },
-        { type: CARD_TYPE.number, value: 10 },
-      ],
-      exploration: [
-        { type: CARD_TYPE.add, value: 1 },
-        { type: CARD_TYPE.number, value: 1 },
-        { type: CARD_TYPE.number, value: 2 },
-        { type: CARD_TYPE.number, value: 3 },
-        { type: CARD_TYPE.number, value: 4 },
-        { type: CARD_TYPE.number, value: 5 },
-        { type: CARD_TYPE.number, value: 6 },
-        { type: CARD_TYPE.number, value: 7 },
-        { type: CARD_TYPE.number, value: 8 },
-      ],
-      social: [
-        { type: CARD_TYPE.add, value: 1 },
-        { type: CARD_TYPE.number, value: 1 },
-        { type: CARD_TYPE.number, value: 2 },
-        { type: CARD_TYPE.number, value: 3 },
-        { type: CARD_TYPE.number, value: 4 },
-        { type: CARD_TYPE.number, value: 5 },
-        { type: CARD_TYPE.number, value: 6 },
-      ],
-    } as Record<Skill, Card[]>,
+    skills: newRandomSkills() as Record<Skill, Card[]>,
     mode: MODE.resting as Mode,
     currentTaskId: null as string | null,
   }
+}
+
+function newRandomSkills() {
+  const cardSets = [
+    [...new Array(11)].map((value, index) => ({
+      type: index === 0 ? CARD_TYPE.add : CARD_TYPE.number,
+      value: index === 0 ? 1 : index,
+    })),
+    [...new Array(9)].map((value, index) => ({
+      type: index === 0 ? CARD_TYPE.add : CARD_TYPE.number,
+      value: index === 0 ? 1 : index,
+    })),
+    [...new Array(7)].map((value, index) => ({
+      type: index === 0 ? CARD_TYPE.add : CARD_TYPE.number,
+      value: index === 0 ? 1 : index,
+    })),
+  ]
+  console.log(cardSets)
+  rng.shuffle(cardSets)
+  const [combat, exploration, social] = cardSets
+  return { combat, exploration, social }
 }
 
 export function formatCard(card: Card) {
