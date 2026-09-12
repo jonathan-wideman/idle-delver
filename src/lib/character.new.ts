@@ -47,6 +47,12 @@ export function newCharacter() {
   }
 }
 
+function newRandomSkills() {
+  const cardSets = [
+    [... new Array(11)].map((i) => ({}))
+  ]
+}
+
 export function formatCard(card: Card) {
   if (card.type === CARD_TYPE.add) return `+${card.value}`
   if (card.type === CARD_TYPE.subtract) return `-${card.value}`
