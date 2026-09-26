@@ -1,12 +1,17 @@
+import { MersenneTwister19937, Random } from "random-js";
+
+export const rng = new Random(
+  MersenneTwister19937.autoSeed()
+);
+
 export function rollDie(sides: number) {
   return randomInt(1, sides)
 }
 
-// TODO: replace with proper PRNG
 export function randomInt(min: number, max: number) {
-  return Math.floor(Math.random() * (max - min + 1)) + min
+  return rng.integer(min, max)
 }
 
 export function choose<T>(arr: T[] | readonly T[]): T {
-  return arr[randomInt(0, arr.length - 1)]
+  return rng.pick(arr)
 }
