@@ -39,3 +39,5 @@ TODO:
 
 - [ ] need bigger numbers to get real incremental bonuses
 - [ ] situational bonuses, eg. *1.05 vs goblins, or +11 to spear cards or +2 dealing with crystals
+- [ ] gain experience or other incremental progress resources towards +1 situational bonuses, eg. use shields over time to level up and get +1 to all equipped shield cards, or better, choose between +1 to all shield number cards or +1 to all shield add cards
+- [ ] gain incremental progress towards card bonuses on individual items, eg. deconstruct a bunch of shields to eventually earn +1 to one card on a shield
