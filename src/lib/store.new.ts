@@ -1,18 +1,18 @@
 import { createStore } from "@xstate/store-react"
 import {
-  drawCards,
-  formatCard,
   MODE,
   newCharacter,
-  resolveCardsResult,
   type Character,
   type Mode,
   type Skill,
 } from "./character.new"
+import {
+  drawCards,
+  formatCard, resolveCardsResult
+} from "./cards.new"
 import { loadContext } from "./persistence.new"
 import { newTask, TASK_TYPE, type Task } from "./task.new"
 import { MS_PER_TICK } from "./useGameTimer.new"
-import { choose, rollDie } from "./rng.new"
 
 // TODO: extract logs stuff
 // export type LogLevel = "debug" | "info" | "gameplay" | "warning" | "error"
