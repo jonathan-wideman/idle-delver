@@ -8,7 +8,7 @@ import {
 } from "./character.new"
 import {
   drawCards,
-  formatCard, resolveCardsResult
+  formatCardValue, resolveCardsResult
 } from "./cards.new"
 import { loadContext } from "./persistence.new"
 import { newTask, TASK_TYPE, type Task } from "./task.new"
@@ -301,7 +301,7 @@ export const store = createStore({
         enq.trigger.log({
           level: LOG_LEVEL.gameplay,
           message: `🃏 ${character.name} drew ${cards
-            .map((card) => formatCard(card))
+            .map((card) => formatCardValue(card))
             .join(
               ", "
             )} = ${result} vs ${difficulty} ${taskSkill} on ${task.name}`,

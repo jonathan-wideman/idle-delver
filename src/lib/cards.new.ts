@@ -7,14 +7,21 @@ export const CARD_TYPE = {
 } as const
 export type CardType = (typeof CARD_TYPE)[keyof typeof CARD_TYPE]
 export type Card = {
+  id: string
   type: CardType
   value: number
+  sourceId?: string
+  icon?: string
 }
 
-export function formatCard(card: Card) {
-  if (card.type === CARD_TYPE.add) return `+${card.value}`
-  if (card.type === CARD_TYPE.subtract) return `-${card.value}`
-  return card.value
+export function formatCardValue(card: Card) {
+  const prefix =
+    card.type === CARD_TYPE.add
+      ? "+"
+      : card.type === CARD_TYPE.subtract
+        ? "-"
+        : ""
+  return `${prefix}${card.value}`
 }
 
 export function drawCards(deck: Card[]): Card[] {
@@ -37,9 +44,16 @@ export function resolveCardsResult(hand: Card[]) {
   }, 0)
 }
 
-export function generateSkillCards(max: number) {
+export function generateSkillCards(
+  max: number,
+  sourceId?: string,
+  icon?: string
+): Card[] {
   return [...new Array(max + 1)].map((value, index) => ({
+    id: crypto.randomUUID() as string,
     type: index === 0 ? CARD_TYPE.add : CARD_TYPE.number,
     value: index === 0 ? 1 : index,
+    sourceId,
+    icon,
   }))
 }

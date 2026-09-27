@@ -3,7 +3,7 @@ import { Panel } from "./components/custom/hoc/Panel"
 import { PanelTitle } from "./components/custom/hoc/PanelTitle"
 import { store } from "./lib/store.new"
 import { MODE, type Character } from "./lib/character.new"
-import { formatCard } from "./lib/cards.new"
+import { formatCardValue, type Card } from "./lib/cards.new"
 import type { Task } from "./lib/task.new"
 import { Button } from "./components/ui/button"
 import { twMerge } from "tailwind-merge"
@@ -52,46 +52,35 @@ export function CharacterPanel() {
                 Heal
               </Button>
             </div>
-            <div>
-              Skills:
-              <ul className="list-outside list-disc pl-8">
-                {Object.entries(character.skills).map(([skill, values]) => (
-                  <li key={skill} className="-indent-1">
-                    {skill}:{" "}
-                    {values.map((card, index) => (
-                      <span
-                        key={index}
-                        className={twMerge(
-                          "my-0.5 mr-1 inline-block h-8 w-6 rounded-sm border bg-accent text-center",
-                          {
-                            add: "text-emerald-200",
-                            subtract: "text-rose-200",
-                            number: null,
-                          }[card.type]
-                        )}
-                      >
-                        {formatCard(card)}
-                      </span>
+            <div className="mb-2">
+              {Object.entries(character.skills).map(([skill, cards]) => (
+                <div key={skill}>
+                  <div>{skill}</div>
+                  <div className="flex flex-wrap gap-1">
+                    {cards.map((card, index) => (
+                      <CardDisplay key={index} index={index} card={card} />
                     ))}
-                  </li>
-                ))}
-              </ul>
+                  </div>
+                </div>
+              ))}
             </div>
-            <Button
-              onClick={() => {
-                store.trigger.characterChangeMode({
-                  characterId: character.id,
-                  mode:
-                    character.mode === MODE.adventuring
-                      ? MODE.resting
-                      : MODE.adventuring,
-                })
-              }}
-              disabled={character.mode === MODE.resting && character.hp < 1}
-            >
-              Go {character.mode === MODE.adventuring ? "Rest" : "Adventure"}
-            </Button>{" "}
-            <div>Mode: {character.mode}</div>
+            <div>
+              Mode: {character.mode}{" "}
+              <Button
+                onClick={() => {
+                  store.trigger.characterChangeMode({
+                    characterId: character.id,
+                    mode:
+                      character.mode === MODE.adventuring
+                        ? MODE.resting
+                        : MODE.adventuring,
+                  })
+                }}
+                disabled={character.mode === MODE.resting && character.hp < 1}
+              >
+                Go {character.mode === MODE.adventuring ? "Rest" : "Adventure"}
+              </Button>{" "}
+            </div>
             <div>Current Task:</div>
             {task ? <TaskPanel task={task} /> : <Panel>None</Panel>}
           </>
@@ -100,6 +89,31 @@ export function CharacterPanel() {
         )}
       </div>
     </Panel>
+  )
+}
+
+export function CardDisplay({
+  index,
+  card,
+}: {
+  index: number
+  card: Card
+}): import("react").JSX.Element {
+  return (
+    <div
+      key={index}
+      className={twMerge(
+        "flex h-14 w-8 flex-col items-center justify-center rounded-sm border bg-accent text-center",
+        {
+          add: "text-emerald-200",
+          subtract: "text-rose-200",
+          number: null,
+        }[card.type]
+      )}
+    >
+      <div>{card.icon ?? "•"}</div>
+      <div>{formatCardValue(card)}</div>
+    </div>
   )
 }
 

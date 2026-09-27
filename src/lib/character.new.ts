@@ -1,4 +1,4 @@
-import { type Card, CARD_TYPE, generateSkillCards } from "./cards.new"
+import { type Card, generateSkillCards } from "./cards.new"
 import { rng } from "./rng.new"
 
 export function newCharacter() {
@@ -14,15 +14,13 @@ export function newCharacter() {
 }
 
 function newRandomSkills() {
-  const cardSets = [
-    generateSkillCards(6),
-    generateSkillCards(8),
-    generateSkillCards(10),
-  ]
-  console.log(cardSets)
-  rng.shuffle(cardSets)
-  const [combat, exploration, social] = cardSets
-  return { combat, exploration, social }
+  let values = [6, 8, 10]
+  rng.shuffle(values)
+  return {
+    combat: generateSkillCards(values[0], "combat"),
+    exploration: generateSkillCards(values[1], "exploration"),
+    social: generateSkillCards(values[2], "social"),
+  }
 }
 
 export const MODE = {
